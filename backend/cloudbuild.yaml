@@ -1,0 +1,75 @@
+# Google Cloud Build — builds and deploys backend to Cloud Run
+# Trigger: push to main branch or manual trigger
+#
+# Required substitutions (set in Cloud Build trigger or command line):
+#   _REGION:              GCP region (e.g., us-central1)
+#   _SERVICE_NAME:        Cloud Run service name (e.g., ma2-backend)
+#   _CLOUD_SQL_INSTANCE:  Cloud SQL connection name (project:region:instance)
+#   _SERVICE_ACCOUNT:     Service account email for Cloud Run
+
+steps:
+  # Build the container image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:latest"
+      - "."
+
+  # Push to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA"
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:latest"
+
+  # Deploy to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "${_SERVICE_NAME}"
+      - "--image"
+      - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA"
+      - "--region"
+      - "${_REGION}"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+      - "--add-cloudsql-instances"
+      - "${_CLOUD_SQL_INSTANCE}"
+      - "--service-account"
+      - "${_SERVICE_ACCOUNT}"
+      - "--memory"
+      - "1Gi"
+      - "--cpu"
+      - "2"
+      - "--timeout"
+      - "300"
+      - "--concurrency"
+      - "80"
+      - "--min-instances"
+      - "0"
+      - "--max-instances"
+      - "5"
+      - "--set-env-vars"
+      - "ENVIRONMENT=production,USE_CLOUD_SQL_CONNECTOR=true,CLOUD_SQL_INSTANCE=${_CLOUD_SQL_INSTANCE},GCP_PROJECT_ID=$PROJECT_ID,VERTEX_AI_MODEL=gemini-2.0-flash,VERTEX_AI_LOCATION=${_REGION}"
+      - "--set-secrets"
+      - "CLOUD_SQL_PASSWORD=cloud-sql-password:latest"
+
+substitutions:
+  _REGION: us-central1
+  _SERVICE_NAME: ma2-backend
+  _CLOUD_SQL_INSTANCE: ""
+  _SERVICE_ACCOUNT: ""
+
+images:
+  - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA"
+  - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:latest"

@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ma2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/ma2
+      DATABASE_URL_SYNC: postgresql+psycopg2://postgres:postgres@db:5432/ma2
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID}
+      VERTEX_AI_MODEL: gemini-2.0-flash
+      VERTEX_AI_LOCATION: us-central1
+      CORS_ORIGINS: '["http://localhost:3000"]'
+      DEBUG: "true"
+      ENVIRONMENT: development
+      PORT: "8000"
+      USE_CLOUD_SQL_CONNECTOR: "false"
+      GOOGLE_APPLICATION_CREDENTIALS: /app/service-account.json
+    volumes:
+      - ${GOOGLE_APPLICATION_CREDENTIALS:-./service-account.json}:/app/service-account.json:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

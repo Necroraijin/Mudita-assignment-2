@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"D:/Mudita assignment 2/frontend/src/app/api/runs\" && mkdir -p \"D:/Mudita assignment 2/frontend/src/app/api/runs/[id]\" && mkdir -p \"D:/Mudita assignment 2/frontend/src/app/api/runs/[id]/facts/[factId]\" && mkdir -p \"D:/Mudita assignment 2/frontend/src/app/api/runs/[id]/reset\" && mkdir -p \"D:/Mudita assignment 2/frontend/src/app/api/runs/[id]/simulate-failure\")",
+      "Bash(cd \"D:/Mudita assignment 2/frontend\" && npx tsc --noEmit --pretty 2>&1 | head -60)",
+      "Bash(cd \"D:/Mudita assignment 2/frontend\" && npx next lint 2>&1 | head -30)",
+      "Bash(cd \"D:/Mudita assignment 2/frontend\" && ./node_modules/.bin/tsc --noEmit --pretty 2>&1 | head -80)",
+      "Bash(cd \"D:/Mudita assignment 2/frontend\" && npm install 2>&1 | tail -10)",
+      "Bash(cd \"D:/Mudita assignment 2/frontend\" && node_modules/.bin/tsc --noEmit 2>&1 | head -80)",
+      "Bash(cd \"D:/Mudita assignment 2/frontend\" && node_modules/.bin/tsc --noEmit 2>&1 | head -40)",
+      "Bash(cd \"D:/Mudita assignment 2/frontend\" && node_modules/.bin/tsc --noEmit 2>&1)",
+      "Bash(cd \"D:/Mudita assignment 2/frontend\" && rm -rf node_modules package-lock.json && npm install 2>&1 | tail -10)",
+      "Bash(cd \"D:/Mudita assignment 2/frontend\" && node_modules/.bin/tsc --noEmit 2>&1 | head -20)",
+      "Bash(cd \"D:/Mudita assignment 2/backend\" && python -c \"import ast; import sys; import os\nerrors = []\nfor root, dirs, files in os.walk\\('app'\\):\n    dirs[:] = [d for d in dirs if d != '__pycache__']\n    for f in files:\n        if f.endswith\\('.py'\\):\n            path = os.path.join\\(root, f\\)\n            try:\n                with open\\(path\\) as fh:\n                    ast.parse\\(fh.read\\(\\)\\)\n            except SyntaxError as e:\n                errors.append\\(f'{path}: {e}'\\)\nfor root, dirs, files in os.walk\\('tests'\\):\n    dirs[:] = [d for d in dirs if d != '__pycache__']\n    for f in files:\n        if f.endswith\\('.py'\\):\n            path = os.path.join\\(root, f\\)\n            try:\n                with open\\(path\\) as fh:\n                    ast.parse\\(fh.read\\(\\)\\)\n            except SyntaxError as e:\n                errors.append\\(f'{path}: {e}'\\)\nif errors:\n    for e in errors:\n        print\\(f'ERROR: {e}'\\)\n    sys.exit\\(1\\)\nelse:\n    print\\(f'All Python files parse OK'\\)\" 2>&1)",
+      "Bash(cd \"D:/Mudita assignment 2/backend\" && python -m venv .venv 2>&1 | tail -5)",
+      "Bash(cd \"D:/Mudita assignment 2/backend\" && .venv/Scripts/pip install -r requirements.txt 2>&1 | tail -20)",
+      "Bash(cd \"D:/Mudita assignment 2/backend\" && .venv/Scripts/python -m pytest tests/test_schemas.py tests/test_loop_engine.py -v 2>&1)",
+      "Bash(cd \"D:/Mudita assignment 2/backend\" && .venv/Scripts/python -m pytest tests/test_bounded_retry.py -v 2>&1)",
+      "Bash(cd \"D:/Mudita assignment 2/backend\" && .venv/Scripts/python -m pytest tests/test_api.py -v 2>&1)",
+      "Bash(cd \"D:/Mudita assignment 2/backend\" && .venv/Scripts/python -m pytest tests/test_session_isolation.py -v 2>&1)",
+      "Bash(cd \"D:/Mudita assignment 2/backend\" && .venv/Scripts/python -m pytest tests/ -v --tb=short 2>&1)",
+      "Bash(cd \"D:/Mudita assignment 2/frontend\" && npm run build 2>&1 | tail -30)",
+      "Bash(echo \"=== Final Consistency Checks ===\"\necho \"\"\necho \"1. No Anthropic/Claude references \\(excluding prd.md\\):\"\ngrep -rn \"anthropic\\\\|Anthropic\\\\|ANTHROPIC\" \"D:/Mudita assignment 2/\" 2>/dev/null | grep -v \"__pycache__\" | grep -v \".pyc\" | grep -v \"node_modules\" | grep -v \".git\" | grep -v \"package-lock\" | grep -v \"prd.md\" | grep -v \".venv\" || echo \"   CLEAN - no references found\"\necho \"\"\necho \"2. Vertex AI references exist in backend:\"\ngrep -rn \"vertex_ai\\\\|vertexai\\\\|VERTEX_AI\" \"D:/Mudita assignment 2/backend/app/\" 2>/dev/null | grep -v \"__pycache__\" | wc -l\necho \"   \\(should be > 0\\)\"\necho \"\"\necho \"3. No frontend API routes \\(backend handles API\\):\"\nls \"D:/Mudita assignment 2/frontend/src/app/api/\" 2>/dev/null || echo \"   CLEAN - no API routes in frontend\"\necho \"\"\necho \"4. No Prisma/Gemini deps in frontend:\"\ngrep -c \"prisma\\\\|gemini\\\\|@google\" \"D:/Mudita assignment 2/frontend/package.json\" 2>/dev/null || echo \"   CLEAN\"\necho \"\"\necho \"5. Frontend .env.example references backend:\"\ngrep \"BACKEND_URL\\\\|API_URL\" \"D:/Mudita assignment 2/frontend/.env.example\" | head -3\necho \"\"\necho \"6. Docker compose has backend + frontend + db:\"\ngrep \"^\\\\s\\\\+\\\\w\\\\+:\" \"D:/Mudita assignment 2/docker-compose.yml\" | head -5)"
+    ]
+  }
+}

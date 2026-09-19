@@ -1,0 +1,34 @@
+# Core
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# Database
+sqlalchemy[asyncio]==2.0.35
+asyncpg==0.29.0
+alembic==1.13.2
+psycopg2-binary==2.9.9
+
+# GCP
+cloud-sql-python-connector[asyncpg]==1.12.1
+google-cloud-aiplatform==1.72.0
+
+# LangGraph
+langgraph==0.2.34
+langgraph-checkpoint-postgres==2.0.6
+
+# Security & Middleware
+slowapi==0.1.9
+python-multipart==0.0.9
+
+# Logging
+structlog==24.4.0
+
+# Testing
+pytest==8.3.3
+pytest-asyncio==0.24.0
+httpx==0.27.2
+
+# ASGI
+gunicorn==23.0.0
