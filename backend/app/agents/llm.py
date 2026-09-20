@@ -2,8 +2,7 @@ import json
 import re
 import time
 import structlog
-import vertexai
-from vertexai.generative_models import GenerativeModel, Part, GenerationConfig
+import google.generativeai as genai
 from pydantic import BaseModel
 from app.config import get_settings
 
@@ -14,19 +13,16 @@ SECRET_PATTERN = re.compile(
     r"(AIza[a-zA-Z0-9\-_]{35}|Bearer\s+[a-zA-Z0-9\-_.]+)", re.IGNORECASE
 )
 
-_vertex_initialized = False
+_genai_configured = False
 
 
-def _ensure_vertex_init():
-    """Initialize Vertex AI SDK once per process."""
-    global _vertex_initialized
-    if not _vertex_initialized:
+def _ensure_genai_configured():
+    """Configure the Google Generative AI SDK once per process."""
+    global _genai_configured
+    if not _genai_configured:
         settings = get_settings()
-        vertexai.init(
-            project=settings.gcp_project_id,
-            location=settings.vertex_ai_location,
-        )
-        _vertex_initialized = True
+        genai.configure(api_key=settings.gemini_api_key)
+        _genai_configured = True
 
 
 def strip_secrets(text: str) -> str:
@@ -48,29 +44,25 @@ def call_llm(
     step: str = "default",
 ) -> LLMResponse:
     settings = get_settings()
-    _ensure_vertex_init()
+    _ensure_genai_configured()
 
-    model = GenerativeModel(
-        model_name=settings.vertex_ai_model,
+    model = genai.GenerativeModel(
+        model_name=settings.gemini_model,
         system_instruction=system_prompt,
-    )
-
-    generation_config = GenerationConfig(
-        max_output_tokens=8192,
-        temperature=0.1,
+        generation_config=genai.types.GenerationConfig(
+            max_output_tokens=8192,
+            temperature=0.1,
+        ),
     )
 
     start_time = time.time()
 
-    response = model.generate_content(
-        user_prompt,
-        generation_config=generation_config,
-    )
+    response = model.generate_content(user_prompt)
 
     latency_ms = int((time.time() - start_time) * 1000)
     content = response.text
 
-    # Extract token usage from usage metadata
+    # Extract token usage
     usage = response.usage_metadata
     tokens_in = usage.prompt_token_count if usage else 0
     tokens_out = usage.candidates_token_count if usage else 0
@@ -80,7 +72,7 @@ def call_llm(
         run_id=run_id,
         agent=agent_name,
         step=step,
-        model=settings.vertex_ai_model,
+        model=settings.gemini_model,
         tokens_in=tokens_in,
         tokens_out=tokens_out,
         latency_ms=latency_ms,

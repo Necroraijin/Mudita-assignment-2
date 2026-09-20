@@ -60,12 +60,12 @@ steps:
       - "--max-instances"
       - "5"
       - "--set-env-vars"
-      - "ENVIRONMENT=production,USE_CLOUD_SQL_CONNECTOR=true,CLOUD_SQL_INSTANCE=${_CLOUD_SQL_INSTANCE},GCP_PROJECT_ID=$PROJECT_ID,VERTEX_AI_MODEL=gemini-2.0-flash,VERTEX_AI_LOCATION=${_REGION}"
+      - "ENVIRONMENT=production,USE_CLOUD_SQL_CONNECTOR=true,CLOUD_SQL_INSTANCE=${_CLOUD_SQL_INSTANCE},CLOUD_SQL_USER=ma2-app,CLOUD_SQL_DATABASE=ma2,GCP_PROJECT_ID=$PROJECT_ID,GEMINI_MODEL=gemini-3.6-flash"
       - "--set-secrets"
-      - "CLOUD_SQL_PASSWORD=cloud-sql-password:latest"
+      - "CLOUD_SQL_PASSWORD=cloud-sql-password:latest,GEMINI_API_KEY=gemini-api-key:latest"
 
 substitutions:
-  _REGION: us-central1
+  _REGION: asia-south1
   _SERVICE_NAME: ma2-backend
   _CLOUD_SQL_INSTANCE: ""
   _SERVICE_ACCOUNT: ""

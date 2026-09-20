@@ -14,7 +14,7 @@ def event_loop():
 
 @pytest.fixture
 def mock_vertex_response():
-    """Factory for mock Vertex AI (Gemini) responses."""
+    """Factory for mock Gemini responses."""
     def _make(content: str, tokens_in: int = 100, tokens_out: int = 200):
         mock_response = MagicMock()
         mock_response.text = content

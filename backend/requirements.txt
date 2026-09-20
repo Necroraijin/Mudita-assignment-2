@@ -12,7 +12,7 @@ psycopg2-binary==2.9.9
 
 # GCP
 cloud-sql-python-connector[asyncpg]==1.12.1
-google-cloud-aiplatform==1.72.0
+google-generativeai==0.8.3
 
 # LangGraph
 langgraph==0.2.34

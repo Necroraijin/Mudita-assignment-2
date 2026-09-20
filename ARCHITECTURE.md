@@ -333,9 +333,8 @@ All agent configuration is managed through environment variables loaded by `back
 
 | Variable | Default | Description |
 |---|---|---|
-| `GCP_PROJECT_ID` | (required) | GCP project ID for Vertex AI |
-| `VERTEX_AI_MODEL` | `gemini-2.0-flash` | Which Gemini model to use for all agents |
-| `VERTEX_AI_LOCATION` | `us-central1` | GCP region for Vertex AI |
+| `GEMINI_API_KEY` | (required) | Google Generative AI API key |
+| `GEMINI_MODEL` | `gemini-3.6-flash` | Which Gemini model to use for all agents |
 | `MAX_REVIEW_CYCLES` | `3` | Maximum review-planning loop iterations before stopping |
 | `MAX_TRANSCRIPT_LENGTH` | `50000` | Maximum characters allowed in transcript input |
 | `MAX_RULES_LENGTH` | `10000` | Maximum characters allowed in rules input |

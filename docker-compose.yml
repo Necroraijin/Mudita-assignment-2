@@ -25,16 +25,13 @@ services:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/ma2
       DATABASE_URL_SYNC: postgresql+psycopg2://postgres:postgres@db:5432/ma2
       GCP_PROJECT_ID: ${GCP_PROJECT_ID}
-      VERTEX_AI_MODEL: gemini-2.0-flash
-      VERTEX_AI_LOCATION: us-central1
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GEMINI_MODEL: gemini-3.6-flash
       CORS_ORIGINS: '["http://localhost:3000"]'
       DEBUG: "true"
       ENVIRONMENT: development
       PORT: "8000"
       USE_CLOUD_SQL_CONNECTOR: "false"
-      GOOGLE_APPLICATION_CREDENTIALS: /app/service-account.json
-    volumes:
-      - ${GOOGLE_APPLICATION_CREDENTIALS:-./service-account.json}:/app/service-account.json:ro
     depends_on:
       db:
         condition: service_healthy

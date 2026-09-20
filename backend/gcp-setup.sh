@@ -40,7 +40,7 @@ gcloud services enable \
     secretmanager.googleapis.com \
     cloudbuild.googleapis.com \
     containerregistry.googleapis.com \
-    aiplatform.googleapis.com
+    generativelanguage.googleapis.com
 
 # Create service account with least-privilege
 echo "--- Creating Service Account ---"
@@ -54,8 +54,7 @@ for ROLE in \
     roles/cloudsql.client \
     roles/secretmanager.secretAccessor \
     roles/logging.logWriter \
-    roles/monitoring.metricWriter \
-    roles/aiplatform.user; do
+    roles/monitoring.metricWriter; do
     gcloud projects add-iam-policy-binding "$PROJECT_ID" \
         --member="serviceAccount:${SA_EMAIL}" \
         --role="$ROLE" \
@@ -66,6 +65,7 @@ done
 echo "--- Creating Cloud SQL Instance ---"
 gcloud sql instances create "$DB_INSTANCE" \
     --database-version=POSTGRES_16 \
+    --edition=enterprise \
     --tier=db-f1-micro \
     --region="$REGION" \
     --storage-auto-increase \
@@ -136,5 +136,6 @@ echo ""
 echo "4. Set the Cloud Run URL as BACKEND_URL in your Vercel project settings."
 echo "   (Vercel rewrites /api/* to Cloud Run — no CORS needed.)"
 echo ""
-echo "5. Vertex AI uses the service account's IAM role (aiplatform.user) — no API key needed."
-echo "   Model: gemini-2.0-flash, Location: $REGION"
+echo "5. Store your Gemini API key in Secret Manager:"
+echo "   echo -n 'YOUR_KEY' | gcloud secrets create gemini-api-key --data-file=- --replication-policy=automatic"
+echo "   gcloud secrets add-iam-policy-binding gemini-api-key --member='serviceAccount:${SA_EMAIL}' --role='roles/secretmanager.secretAccessor'"

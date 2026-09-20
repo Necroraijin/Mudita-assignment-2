@@ -26,8 +26,8 @@ class TestBoundedRetry:
         settings = MagicMock()
         settings.max_review_cycles = 2
         settings.gcp_project_id = "test-project"
-        settings.vertex_ai_model = "gemini-2.0-flash"
-        settings.vertex_ai_location = "us-central1"
+        settings.gemini_api_key = "test-key"
+        settings.gemini_model = "gemini-3.6-flash"
         mock_settings.return_value = settings
 
         # Intake always succeeds

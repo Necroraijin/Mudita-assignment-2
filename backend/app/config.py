@@ -21,9 +21,9 @@ class Settings(BaseSettings):
     cloud_sql_password: str = ""
     use_cloud_sql_connector: bool = False
 
-    # Google Vertex AI (Gemini)
-    vertex_ai_model: str = "gemini-2.0-flash"
-    vertex_ai_location: str = "us-central1"
+    # Google Generative AI (Gemini)
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-3.6-flash"
 
     # Agent config
     max_review_cycles: int = 3
